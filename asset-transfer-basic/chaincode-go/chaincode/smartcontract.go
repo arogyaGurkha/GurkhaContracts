@@ -32,6 +32,7 @@ func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) 
 		{ID: "asset4", Color: "yellow", Size: 10, Owner: "Max", AppraisedValue: 600},
 		{ID: "asset5", Color: "black", Size: 15, Owner: "Adriana", AppraisedValue: 700},
 		{ID: "asset6", Color: "white", Size: 15, Owner: "Michel", AppraisedValue: 800},
+		{ID: "gurkhaAsset", Color: "red", Size: 1000, Owner: "Gurkhaman", AppraisedValue: 2000},
 	}
 
 	for _, asset := range assets {
