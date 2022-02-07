@@ -32,7 +32,6 @@ func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) 
 		{ID: "asset4", Color: "yellow", Size: 10, Owner: "Max", AppraisedValue: 600},
 		{ID: "asset5", Color: "black", Size: 15, Owner: "Adriana", AppraisedValue: 700},
 		{ID: "asset6", Color: "white", Size: 15, Owner: "Michel", AppraisedValue: 800},
-		{ID: "gurkhaAsset", Color: "red", Size: 1000, Owner: "Gurkhaman", AppraisedValue: 2000},
 	}
 
 	for _, asset := range assets {
@@ -143,20 +142,27 @@ func (s *SmartContract) AssetExists(ctx contractapi.TransactionContextInterface,
 	return assetJSON != nil, nil
 }
 
-// TransferAsset updates the owner field of asset with given id in world state.
-func (s *SmartContract) TransferAsset(ctx contractapi.TransactionContextInterface, id string, newOwner string) error {
+// TransferAsset updates the owner field of asset with given id in world state, and returns the old owner.
+func (s *SmartContract) TransferAsset(ctx contractapi.TransactionContextInterface, id string, newOwner string) (string, error) {
 	asset, err := s.ReadAsset(ctx, id)
 	if err != nil {
-		return err
+		return "", err
 	}
 
+	oldOwner := asset.Owner
 	asset.Owner = newOwner
+
 	assetJSON, err := json.Marshal(asset)
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	return ctx.GetStub().PutState(id, assetJSON)
+	err = ctx.GetStub().PutState(id, assetJSON)
+	if err != nil {
+		return "", err
+	}
+
+	return oldOwner, nil
 }
 
 // GetAllAssets returns all assets found in world state
